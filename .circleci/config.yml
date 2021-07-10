@@ -1,0 +1,27 @@
+# For a detailed guide to building and testing on iOS, read the docs:
+# https://circleci.com/docs/2.0/testing-ios/
+
+version: 2.1
+
+jobs:
+  build:
+
+    macos:
+      xcode: 11.0.0 # Specify the Xcode version to use
+
+    steps:
+      - checkout
+      - run:
+          command: |
+            git submodule update --init --recursive
+          name: Init git submodule
+      - run:
+          command: |
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            brew install -f libffi gettext glib pkg-config autoconf automake pixman ninja
+          name: install dependencies
+      - run:
+          command: |
+            mkdir -p build
+            cd build && ../configure
+            make -j 8
